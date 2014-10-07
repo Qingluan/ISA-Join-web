@@ -16,3 +16,36 @@
 ## Introduction 
 ## Install 
 ## Useage 
+## arguments
+
+ - client to server
+```
+{
+	'JSON_REGISTER':{
+		'email':str,
+		'ID':str,
+		'nick':str,
+		'passwd':str(hash),
+		'introduction':str,
+	}
+}
+```
+
+ - server to client
+
+```
+{
+	'result':'ok'/'no'
+	'error':str # if result is 'ok' this item is not appearence
+}
+
+```
+
+```
+{
+	'JSON_LOGIN':{
+		'ID':int,
+		'passwd':str,
+	}
+}
+```
