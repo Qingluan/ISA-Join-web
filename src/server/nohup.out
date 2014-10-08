@@ -630,3 +630,6 @@ mongod --help for help and startup options
 2014-10-09T06:41:33.367+0800 [clientcursormon]  mapped (incl journal view):480
 2014-10-09T06:41:33.367+0800 [clientcursormon]  connections:1
 2014-10-09T06:43:49.170+0800 [conn27] end connection 127.0.0.1:63834 (0 connections now open)
+2014-10-09T06:46:33.506+0800 [clientcursormon] mem (MB) res:3 virt:2965
+2014-10-09T06:46:33.506+0800 [clientcursormon]  mapped (incl journal view):480
+2014-10-09T06:46:33.506+0800 [clientcursormon]  connections:0
