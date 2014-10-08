@@ -209,3 +209,7 @@ class PushMessageHandler(BaseHandler):
         pass
     def get(self):
         pass
+class MembersHandler(BaseHandler):
+    @tornado.web.asynchronous
+    def get(self):
+        self.render("members.html")
