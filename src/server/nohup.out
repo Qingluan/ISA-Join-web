@@ -633,3 +633,9 @@ mongod --help for help and startup options
 2014-10-09T06:46:33.506+0800 [clientcursormon] mem (MB) res:3 virt:2965
 2014-10-09T06:46:33.506+0800 [clientcursormon]  mapped (incl journal view):480
 2014-10-09T06:46:33.506+0800 [clientcursormon]  connections:0
+WARNING:tornado.access:404 GET /favicon.ico (117.136.0.154) 1.84ms
+WARNING:tornado.access:404 GET /robots.txt (66.249.67.119) 0.85ms
+WARNING:tornado.access:404 GET /legal.jsp (66.249.67.111) 0.53ms
+WARNING:tornado.access:404 GET /favicon.ico (117.136.0.154) 1.62ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 1.84ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 2.37ms
