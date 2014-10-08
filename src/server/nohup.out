@@ -639,3 +639,22 @@ WARNING:tornado.access:404 GET /legal.jsp (66.249.67.111) 0.53ms
 WARNING:tornado.access:404 GET /favicon.ico (117.136.0.154) 1.62ms
 WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 1.84ms
 WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 2.37ms
+ERROR:tornado.general:Could not open static file '/root/ISC-AS/resource/static/images/yangke.jpg'
+WARNING:tornado.access:404 GET /static/images/yangke.jpg (117.136.0.154) 1.75ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 0.81ms
+ERROR:tornado.general:Could not open static file '/root/ISC-AS/resource/static/images/yangke.jpg'
+WARNING:tornado.access:404 GET /static/images/yangke.jpg (117.136.0.154) 1.31ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 0.72ms
+ERROR:tornado.general:Could not open static file '/root/ISC-AS/resource/static/images/yangke.jpg'
+WARNING:tornado.access:404 GET /static/images/yangke.jpg (117.136.0.154) 1.59ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 0.54ms
+ERROR:tornado.general:Could not open static file '/root/ISC-AS/resource/static/images/yangke.jpg'
+WARNING:tornado.access:404 GET /static/images/yangke.jpg (117.136.0.154) 1.43ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 0.75ms
+ERROR:tornado.general:Could not open static file '/root/ISC-AS/resource/static/images/yangke.jpg'
+WARNING:tornado.access:404 GET /static/images/yangke.jpg (117.136.0.154) 1.36ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 0.69ms
+ERROR:tornado.general:Could not open static file '/root/ISC-AS/resource/static/images/yangke.jpg'
+WARNING:tornado.access:404 GET /static/images/yangke.jpg (117.136.0.154) 1.34ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 0.73ms
+WARNING:tornado.access:404 GET /static/bootstrap.css.map (117.136.0.154) 1.69ms
