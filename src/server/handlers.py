@@ -2,8 +2,6 @@ import tornado.web
 import tornado.ioloop
 from tornado.ioloop import IOLoop
 from tornado import gen
-import motor
-import pymongo
 import json
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -53,9 +51,9 @@ class BaseHandler(tornado.web.RequestHandler):
         docu =  self.db.ISC[document_type]
         print "docu {}".format(document)
         rs = docu.find(document)
-        res = {}
+        res =[]
         for i in (yield rs.to_list(length=100)):
-            res[i['nick']] = i
+            res.append( i)
 
         after_block(res)
 
@@ -96,9 +94,17 @@ class BaseHandler(tornado.web.RequestHandler):
         return True
 
 class IndexHandler(BaseHandler):
-    def get(self):
-        self.render('main.html',post_page="/")
+    def after_find(self,res):
+        print res
+        all_user = []
+        for i in res:
+            all_user.append(i['ID'])
+        self.render("main.html",all_users=all_user)
 
+
+    @tornado.web.asynchronous
+    def get(self):
+        self.find_all('user',{},after_block=self.after_find)
 class LoginHandler(BaseHandler):
 
 
@@ -174,15 +180,21 @@ class SignUpHandler(BaseHandler):
             self.insert_by('user',sign_info,after_block=self.after_insert)
 
     def after_insert(self):
-        self.json_respond({
-            'result':'ok',
-            'message':"{} ,welcom to our association".format(self.sign_info['nick']),
-        })
-
+        #self.json_respond({
+        #   'result':'ok',
+        #    'message':"{} ,welcom to our association".format(self.sign_info['nick']),
+        #})
+        self.redirect("/")
 
     @tornado.web.asynchronous
     def post(self):
-        self.sign_info = self.get_message('JSON_REGISTER')
+        self.sign_info = {}
+        self.sign_info['email'] = self.get_argument("email")
+        self.sign_info['nick'] = self.get_argument('nick')
+        self.sign_info['ID'] = self.get_argument('ID')
+        self.sign_info['passwd'] = self.get_argument('passwd')
+        print self.sign_info
+        #self.sign_info = self.get_message('JSON_REGISTER')
         email = self.sign_info['email']
         user_id = self.sign_info['ID']
         nick_name = self.sign_info['nick']
