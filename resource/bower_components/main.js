@@ -11,3 +11,7 @@ $("div#new-user").hover(
 	}
     }
 );
+
+function register(){
+
+}

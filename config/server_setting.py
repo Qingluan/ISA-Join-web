@@ -6,7 +6,7 @@ from os import path
 db_client = motor.MotorClient()
 ##
 
-static_path = path.join(path.pardir,"resource/statics")
+static_path = path.join(path.pardir,"../resource/static")
 ## setting all components ##
 settings = {
     'db' : db_client,
