@@ -96,8 +96,8 @@ class BaseHandler(tornado.web.RequestHandler):
         return True
 
 class IndexHandler(BaseHandler):
-    def get(self):
-        self.render('main.html',post_page="/")
+	def get(self):
+		self.render('main.html',post_page='/')
 
 class LoginHandler(BaseHandler):
 
