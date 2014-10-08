@@ -6,7 +6,7 @@ import motor
 import pymongo
 import json
 
-class BaseHandler(tornado.we.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):
         self.db = self.settings['db']
 
@@ -14,21 +14,26 @@ class BaseHandler(tornado.we.RequestHandler):
         return self.get_secure_cookie('name')
 
     def mongo_callback(result,err):
-        print 'result', repr(result), 'error', repr(error)
+        print 'result', repr(result), 'error', repr(err)
         IOLoop.instance().stop()
+    def after_handler(res=None):
+        """
+            this is an arrange should immplementation
+        """
+        raise Error("no immplementation")
 
+    @tornado.web.asynchronous
     @gen.coroutine
-    def find_by(self,document_type,document):
+    def find_by(self,document_type,document,after_block=None):
         if not isinstance(document,dict):
             raise TypeError("this obj is not dict")
         docu = self.db.ISC[document_type]
-        result = yields motor.Op(doc.find_one,document)
-        if result :
-            return result
-        else:
-            return False
+        result = yield docu.find_one(document)
+        after_block(result)
+
+    @tornado.web.asynchronous
     @gen.coroutine
-    def insert_by(self,document_type,document,before_check=None,*additional_args):
+    def insert_by(self,document_type,document,before_check=None,after_block=None,*additional_args):
         if not isinstance(document,dict):
             raise TypeError("this obj is not dict")
 
@@ -36,18 +41,27 @@ class BaseHandler(tornado.we.RequestHandler):
             before_check(*additional_args)
         docu = self.db.ISC[document_type]
         docu.insert(document)
+        after_block()
 
+    @tornado.web.asynchronous
     @gen.coroutine
-    def find_all(self,document_type,document,before_check=None,*additional_args):
+    def find_all(self,document_type,document,before_check=None,after_block=None,*additional_args):
         if not isinstance(document,dict):
             raise TypeError("this obj is not dict")
         if before_check:
             before_check(*additional_args)
-        docu = self.db.ISC[document_type]
-        return  docu.find(document)
+        docu =  self.db.ISC[document_type]
+        print "docu {}".format(document)
+        rs = docu.find(document)
+        res = {}
+        for i in (yield rs.to_list(length=100)):
+            res[i['nick']] = i
 
+        after_block(res)
+
+    @tornado.web.asynchronous
     @gen.coroutine
-    def remove_by(self,document_type,document,before_check=None,*additional_args):
+    def remove_by(self,document_type,document,before_check=None,after_block=None,*additional_args):
         if not isinstance(document,dict):
             raise TypeError("this obj is not dict")
 
@@ -55,16 +69,17 @@ class BaseHandler(tornado.we.RequestHandler):
             before_check(*additional_args)
         docu = self.db.ISC[document_type]
         docu.remove(document)
+        after_block()
 
-    def to_json_message(**message):
+    def to_json_message(self,message):
         return  json.dumps(message)
 
     @tornado.web.asynchronous
-    def json_respond(message):
+    def json_respond(self,message):
         self.write(self.to_json_message(message))
         self.finish()
 
-    def get_message(key):
+    def get_message(self,key):
         return json.loads(self.get_argument(key))
 
     def params_permit(self,*args):
@@ -73,21 +88,17 @@ class BaseHandler(tornado.we.RequestHandler):
             primary_list =list( set(self.get_arguments().keys())- params_permit)
             map(lambda x: self.get_arguments().pop(x),primary_list)
 
-    def check_args(document,*args):
+    def check_args(self,document,*args):
+        print document
         for key in args:
             if not key in document:
                 return False
         return True
+
 class LoginHandler(BaseHandler):
 
-    @gen.coroutine
-    @tornado.web.asynchronous
-    def login_user(self,id,passwd,nick=None):
-        user_docu = {
-            'ID':id,
-            'passwd':passwd,
-        }
-        user_exist = self.find_by('user',user_docu)
+
+    def after_handler(self,user_exist):
         if user_exist:
             self.json_respond({
                 'result':'ok',
@@ -98,64 +109,87 @@ class LoginHandler(BaseHandler):
                 'error' :'account not right',
 
             })
+
+    @gen.coroutine
+    @tornado.web.asynchronous
+    def login_user(self,id,passwd,nick=None):
+        user_docu = {
+            'ID':id,
+            'passwd':passwd,
+        }
+        self.find_by('user',user_docu,after_block=self.after_handler)
+
     @tornado.web.asynchronous
     def post(self):
         login_info = self.get_message("LOGIN_INFO")
-        if "ID" in login_info and "passwd"  in login_info :
+        if self.check_args(login_info,'ID','passwd') :
             self.login_user(login_info['ID'],login_info['passwd'])
         print login_info
 
     @tornado.web.asynchronous
     def get(self):
-        res = self.find_all('user',{})
-        self.json_respond({'users':res})
-
-class SignUpHandler(BaseHandler):
-
-    def if_exist(self,email,ID,nick):
-        user_exist_doc = {
-            'email':email,
-            'ID':ID,
-            'nick':nick,
-        }
-        user_exist = self.find_by('user',user_docu)
-        if user_exist:
-            return True
-        return False
+        self.find_all('user',{},after_block=self.after_find_all)
 
     @tornado.web.asynchronous
-    def sign_user(sign_info):
-        if not isinstance(sign_info,dict):
-            raise TypeError("this should be 'dict' ")
-
-        if self.check_args(sign_info,'email','passwd','ID','nick'):
-            self.insert('user',sign_info)
+    def after_find_all(self,res):
+        print res
+        if res:
             self.json_respond({
-                'result':'ok',
-                'message':"{} ,welcom to our association".format(sign_info['nick']),
+                'user':repr(res)
+            })
+        else:
+            self.json_respond({
+                'result':'no',
             })
 
+class SignUpHandler(BaseHandler):
     @tornado.web.asynchronous
-    def post(self):
-        sign_info = self.get_message('JSON_REGISTER')
-        email = sign_info['email']
-        user_id = sign_info['ID']
-        nick_name = sign_info['nick']
-        test_res =  self.if_exist(email,user_id,nick_name)
+    def after_handler(self,test_res=None):
         if test_res:
             self.json_respond({
                 'result':'no',
                 'error' :"{} is existed".format(test_res),
             })
         else:
-            self.sign_user(sign_info)
+            self.sign_user(self.sign_info)
+
+    def sign_action(self,email,ID,nick):
+        user_docu = {
+            'email':email,
+            'ID':ID,
+            'nick':nick,
+        }
+        self.find_by('user',user_docu,after_block=self.after_handler)
+
+    @tornado.web.asynchronous
+    def sign_user(self,sign_info):
+        if not isinstance(sign_info,dict):
+            raise TypeError("this should be 'dict' ")
+
+        if self.check_args(sign_info,'email','passwd','ID','nick'):
+            self.insert_by('user',sign_info,after_block=self.after_insert)
+
+    def after_insert(self):
+        self.json_respond({
+            'result':'ok',
+            'message':"{} ,welcom to our association".format(self.sign_info['nick']),
+        })
+
+
+    @tornado.web.asynchronous
+    def post(self):
+        self.sign_info = self.get_message('JSON_REGISTER')
+        email = self.sign_info['email']
+        user_id = self.sign_info['ID']
+        nick_name = self.sign_info['nick']
+        self.sign_action(email,user_id,nick_name)
+
 
     def get(self):
-        pass
-
+        self.render('register.html',post_page="/SignUp")
 class PushMessageHandler(BaseHandler):
 
-    def post(self,request):
+    def post(self):
         pass
     def get(self):
         pass
