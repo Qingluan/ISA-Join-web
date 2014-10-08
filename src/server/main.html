@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main page</title>
+    <link href="../../resource/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="../../resource/bower_components/custom/main.css" rel="stylesheet">
+</head>
+<body>
+	<div class="jumbotron" id="info-panel">
+		<h1>Hello world</h1>
+		<p>this is a test ... <a href="#" class="btn btn-default btn-lg"></a></p>
+
+	</div>
+	<div class="jumbotron" id="new-user" moved="un">
+		<h1>ss</h1>
+		<p>sadasd<a href="#" class=""btn btn-primary btn-lg>Detail</a></p>
+	</div>
+	<div class="jumbotron collapse on " id='user-panel' moved="un">
+		<h1>test</h1>
+		<p>soem ...... <a href="#" class="btn btn-primary btn-lg " >Detail </a></p>
+		<form action="/SignUp" method="post" enctype='application/json' >
+			<div class="form-group">
+				<label class="src-only"></label>
+				<input type="number" class="form-control" name="JSON_REGISTER[ID]" id="InputID" placeholder="Enter  your student ID"></input>
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="exampleInputEmail2">Email niCk name</label>
+				<input type="text" class="form-control" name="JSON_REGISTER[nick]" id="InputNick" placeholder="Enter nick name"></input>
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="exampleInputEmail2">Email address</label>
+				<input type="email" class="form-control" name="JSON_REGISTER[email]" id="InputEmail" placeholder="Enter email"></input>
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="exampleInputEmail2">Email password</label>
+				<input type="password" class="form-control" name="JSON_REGISTER[passwd]" id="Inputpasswd" placeholder="000000"></input>
+			</div>
+			<button type="submit" class="btn btn-default ">apply to join us </button>
+		</form>
+	</div>
+	<script type="text/javascript" src="../../resource/bower_components/jquery/dist/jquery.js"></script>
+	<script src="../../resource/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="../../resource/bower_components/main.js"></script>
+	
+</body>
+</html>
